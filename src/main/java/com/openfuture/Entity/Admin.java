@@ -28,10 +28,17 @@ public class Admin {
     @Column(nullable = false, unique = true)
     private String email;
 
+    private String jobTitle;
+    private String position;
+    private String experience;
+    private String skills;
+    private String jobDescription;
+    private String location;
+
     @Lob
     @Column(name = "profile_picture",columnDefinition = "LONGBLOB")
     @Basic(fetch = FetchType.LAZY)
-    @Nullable
+    //@Nullable
     private byte[] profilePicture;
 
 }

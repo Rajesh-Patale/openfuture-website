@@ -2,6 +2,7 @@ package com.openfuture.Service;
 
 
 import com.openfuture.Entity.Admin;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,4 +15,6 @@ public interface AdminService {
     Admin updateAdmin(Long adminId, Admin adminDetails, MultipartFile profilePicture);
 
     void deleteAdmin(Long adminId);
+
+    String jobpost(Admin admin);
 }

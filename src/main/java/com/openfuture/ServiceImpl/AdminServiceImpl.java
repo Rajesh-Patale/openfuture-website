@@ -9,11 +9,11 @@ import com.openfuture.Service.AdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -127,6 +127,15 @@ public class AdminServiceImpl implements AdminService {
         adminRepository.deleteById(adminId);
         logger.info("Successfully deleted admin with id: {}", adminId);
     }
+
+    @Override
+    public String jobpost(Admin admin) {
+        logger.info("Create job Post By Admin", admin);
+        adminRepository.save(admin);
+        return "Job posted successfully";
+
+    }
+
 
     private void validateAdminData(Admin admin) {
         // Validate admin data

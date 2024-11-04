@@ -45,6 +45,8 @@ public class AdminController {
                 admin.setProfilePicture(null);
             }
 
+
+
             // Register the admin
             String message = adminService.registerAdmin(admin);
             return ResponseEntity.status(HttpStatus.OK).body("Successfully registered Admin");
@@ -122,4 +124,14 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
         }
     }
+
+    @PostMapping("/JobPost")
+    public ResponseEntity<String> jobPost(@RequestBody Admin admin)
+    {
+        ObjectMapper objectMapper = new ObjectMapper();
+        adminService.jobpost(admin);
+        return ResponseEntity.status(HttpStatus.OK).body("Job posted successfully");
+    }
+
+
 }
