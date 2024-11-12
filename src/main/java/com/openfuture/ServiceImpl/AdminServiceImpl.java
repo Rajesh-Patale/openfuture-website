@@ -3,8 +3,13 @@ package com.openfuture.ServiceImpl;
 
 import com.openfuture.CommonUtil.ValidationClass;
 import com.openfuture.Entity.Admin;
+import com.openfuture.Entity.Form;
+import com.openfuture.Entity.Job;
 import com.openfuture.Exception.AdminNotFoundException;
+import com.openfuture.Exception.FormNotFoundException;
 import com.openfuture.Repository.AdminRepository;
+import com.openfuture.Repository.FormRepository;
+import com.openfuture.Repository.JobRepository;
 import com.openfuture.Service.AdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
@@ -22,6 +28,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private FormRepository formRepository;;
+
+    @Autowired
+    private JobRepository jobRepository;
 
     @Override
     @Transactional
@@ -143,5 +155,40 @@ public class AdminServiceImpl implements AdminService {
             throw new IllegalArgumentException("Invalid mobile number");
         }
     }
+
+    public List<Form> getAllForms() {
+        logger.info("Fetching all forms");
+        return formRepository.findAll();
+    }
+
+    public Form getFormByFormId(Long formId) {
+        logger.info("Fetching form by ID: {}", formId);
+        return formRepository.findById(formId)
+                .orElseThrow(() -> new FormNotFoundException("Form not found with id: " + formId));
+    }
+
+//    public List<Form> getFormsByJobTitle(String jobTitle) {
+//        logger.info("Fetching forms by job title: {}", jobTitle);
+//        List<Form> forms = formRepository.findByJobTitle(jobTitle);
+//        if (forms.isEmpty()) {
+//            throw new FormNotFoundException("No forms found with job title: " + jobTitle);
+//        }
+//        return forms;
+//    }
+
+    public List<Job> getAllJobsUploadedByAdmin() {
+        logger.info("Fetching all jobs uploaded by Admin : {}");
+
+        return jobRepository.findAll();
+    }
+
+//    public List<Job> getAllJobsByJobTitleInAdmin( String jobTitle) {
+//        logger.info("Fetching jobs by title '{}' uploaded by Admin ID: {}", jobTitle);
+//        List<Job> forms = jobRepository.findByJobTitle( jobTitle);
+//        if (forms.isEmpty()) {
+//            throw new FormNotFoundException("No jobs found with title: " + jobTitle + " for admin with id: " );
+//        }
+//        return forms;
+//    }
 }
 
