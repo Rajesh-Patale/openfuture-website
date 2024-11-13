@@ -4,6 +4,8 @@ package com.openfuture.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openfuture.Entity.Admin;
+import com.openfuture.Entity.Form;
+import com.openfuture.Entity.Job;
 import com.openfuture.Exception.AdminNotFoundException;
 import com.openfuture.Exception.UserNotFoundException;
 import com.openfuture.Service.AdminService;
@@ -14,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -133,5 +137,42 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body("Job posted successfully");
     }
 
+    // to get All User forms
+
+    @GetMapping("/form/getAllForms")
+    public ResponseEntity<List<Form>> getAllForms() {
+
+        try {
+            logger.info("Received request to get all forms");
+            return new ResponseEntity<>(adminService.getAllForms(), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Failed to retrieve forms: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/forms/{formId}")
+    public ResponseEntity<Form> getFormByFormId(@PathVariable Long formId) {
+        try {
+            logger.info("Received request to get form by ID: {}", formId);
+            return new ResponseEntity<>(adminService.getFormByFormId(formId), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Failed to retrieve form: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+//
+
+    @GetMapping("/job/getAllJobs")
+    public ResponseEntity<List<Job>> getAllJobsUploadedByAdmin() {
+        try {
+            logger.info("Received request to get all jobs uploaded by Admin ID: {}");
+            return new ResponseEntity<>(adminService.getAllJobsUploadedByAdmin(), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Failed to retrieve jobs uploaded by admin: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 
 }

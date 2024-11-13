@@ -3,8 +3,13 @@ package com.openfuture.ServiceImpl;
 
 import com.openfuture.CommonUtil.ValidationClass;
 import com.openfuture.Entity.Admin;
+import com.openfuture.Entity.Form;
+import com.openfuture.Entity.Job;
 import com.openfuture.Exception.AdminNotFoundException;
+import com.openfuture.Exception.FormNotFoundException;
 import com.openfuture.Repository.AdminRepository;
+import com.openfuture.Repository.FormRepository;
+import com.openfuture.Repository.JobRepository;
 import com.openfuture.Service.AdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -22,6 +28,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private FormRepository formRepository;
+
+    @Autowired
+    private JobRepository jobRepository;
 
     @Override
     @Transactional
@@ -151,6 +163,22 @@ public class AdminServiceImpl implements AdminService {
         if (admin.getMobileNo() == null || !ValidationClass.PHONE_PATTERN.matcher(admin.getMobileNo()).matches()) {
             throw new IllegalArgumentException("Invalid mobile number");
         }
+    }
+
+    public List<Form> getAllForms() {
+        logger.info("Fetching all forms");
+        return formRepository.findAll();
+    }
+
+    public Form getFormByFormId(Long formId) {
+        logger.info("Fetching form by ID: {}", formId);
+        return formRepository.findById(formId)
+                .orElseThrow(() -> new FormNotFoundException("Form not found with id: " + formId));
+    }
+    public List<Job> getAllJobsUploadedByAdmin() {
+        logger.info("Fetching all jobs uploaded by Admin : {}");
+
+        return jobRepository.findAll();
     }
 }
 
