@@ -1,6 +1,7 @@
 package com.openfuture.Entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,5 +45,11 @@ public class Admin {
     @OneToMany(mappedBy ="admin" ,cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Job> job;
+
+
+    @OneToMany(mappedBy = "admin" ,cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @JsonProperty("adminId")
+    private List<News> newsList;
 
 }
