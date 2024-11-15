@@ -1,8 +1,13 @@
 package com.openfuture.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -33,5 +38,13 @@ public class Admin {
     @Basic(fetch = FetchType.LAZY)
     @Nullable
     private byte[] profilePicture;
+
+    @OneToMany(mappedBy = "admin" ,cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @JsonProperty("adminId")
+    private List<News> newsList;
+
+//    private String newsTitle;
+//    private String newsContent;
 
 }
