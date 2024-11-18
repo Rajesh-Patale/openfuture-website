@@ -84,23 +84,23 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public News updateNewsByAdminId(Long adminId, String title, String content) {
-        logger.info("Updating news by adminId {}", adminId);
-        News existingNews = newsRepository.findByAdminId(adminId)
-                .orElseThrow(() -> new NewsNotFound("News not found for adminId: " + adminId));
+    public News updateNewsByNewsId(Long newsId, News news) {
+        logger.info("Updating news by adminId {}", newsId);
+        News existingNews = newsRepository.findById(newsId)
+                .orElseThrow(() -> new NewsNotFound("News not found for adminId: " + newsId));
 
         // Update the news content
-        existingNews.setNewsTitle(title);
-        existingNews.setNewsContent(content);
+        existingNews.setNewsTitle(news.getNewsTitle());
+        existingNews.setNewsContent(news.getNewsContent());
 
         return newsRepository.save(existingNews);
     }
 
     @Override
-    public void deleteNewsByAdminId(Long adminId) {
-        logger.info("Deleting news by adminId {}", adminId);
-        News existingNews = newsRepository.findByAdminId(adminId)
-                .orElseThrow(() -> new NewsNotFound("News not found for adminId: " + adminId));
+    public void deleteNewsByNewsId(Long newsId) {
+        logger.info("Deleting news by adminId {}", newsId);
+        News existingNews = newsRepository.findById(newsId)
+                .orElseThrow(() -> new NewsNotFound("News not found for adminId: " + newsId));
 
         newsRepository.delete(existingNews);
     }
