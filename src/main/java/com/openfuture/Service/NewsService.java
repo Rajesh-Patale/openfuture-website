@@ -12,9 +12,9 @@ public interface NewsService{
     List<News> getAllNews();
     News getNewsByAdminId(Long adminId);
 
-    News updateNewsByAdminId(Long adminId, String title, String content);
+    News updateNewsByNewsId(Long newsId, News news);
 
-    void deleteNewsByAdminId(Long adminId);
+    void deleteNewsByNewsId(Long newsId);
 
 
 }

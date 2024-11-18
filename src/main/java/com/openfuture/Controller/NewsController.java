@@ -76,15 +76,14 @@ public class NewsController {
 
 
 
-    @PutMapping("/update/{adminId}")
-    public ResponseEntity<News> updateNews(@PathVariable Long adminId,
-                                           @RequestParam String title,
-                                           @RequestParam String content) {
+    @PutMapping("/update/{newsId}")
+    public ResponseEntity<News> updateNews(@PathVariable Long newsId,@RequestBody
+                                           News news) {
         try {
-            News updatedNews = newsService.updateNewsByAdminId(adminId, title, content);
+            News updatedNews = newsService.updateNewsByNewsId(newsId, news);
             return new ResponseEntity<>(updatedNews, HttpStatus.OK);
         } catch (NewsNotFound e) {
-            logger.error("Error while updating news for adminId {}: {}", adminId, e.getMessage());
+            logger.error("Error while updating news for adminId {}: {}", newsId, e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
             logger.error("Error while updating news {}", e.getMessage());
@@ -93,13 +92,13 @@ public class NewsController {
     }
 
 
-    @DeleteMapping("/delete/{adminId}")
-    public ResponseEntity<Void> deleteNews(@PathVariable Long adminId) {
+    @DeleteMapping("/delete/{newsId}")
+    public ResponseEntity<Void> deleteNews(@PathVariable Long newsId) {
         try {
-            newsService.deleteNewsByAdminId(adminId);
+            newsService.deleteNewsByNewsId(newsId);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (NewsNotFound e) {
-            logger.error("Error while deleting news for adminId {}: {}", adminId, e.getMessage());
+            logger.error("Error while deleting news for adminId {}: {}", newsId, e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
             logger.error("Error while deleting news {}", e.getMessage());
