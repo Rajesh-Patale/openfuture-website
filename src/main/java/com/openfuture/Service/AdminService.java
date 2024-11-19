@@ -26,4 +26,5 @@ public interface AdminService {
     Form getFormByFormId(Long formId);
 
     List<Job> getAllJobsUploadedByAdmin();
+    Admin getAdminById(Long adminId);
 }

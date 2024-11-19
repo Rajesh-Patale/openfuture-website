@@ -128,6 +128,14 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
         }
     }
+    @GetMapping("/getAdminById/{adminId}")public ResponseEntity<Admin> getAdminById(@PathVariable Long adminId)
+    {    try {        Admin admin = adminService.getAdminById(adminId);
+        return new ResponseEntity<>(admin, HttpStatus.OK);    }
+    catch (AdminNotFoundException e)
+    {        logger.error("Admin not found: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);    }
+    catch (Exception e) {        logger.error("Error occurred while fetching admin: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);    }}
 
     @PostMapping("/JobPost")
     public ResponseEntity<String> jobPost(@RequestBody Admin admin)
