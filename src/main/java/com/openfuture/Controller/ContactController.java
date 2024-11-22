@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 @RestController
 @RequestMapping("/api/contacts")
+@CrossOrigin("*")
 public class ContactController {
 
     private static final Logger logger = LoggerFactory.getLogger(ContactController.class);
