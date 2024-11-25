@@ -22,6 +22,7 @@ public class Form {
     private String email;
     private String country;
     private Long mobileNumber;
+    private String position;
     private String location;
     @Lob
     private byte[] cv;
