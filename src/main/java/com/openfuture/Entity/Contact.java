@@ -19,17 +19,24 @@ public class Contact {
 
     @NotBlank(message = "First name is required")
     @Size(min = 2, max = 30, message = "First name should be between 2 and 30 characters")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "First name must contain only alphabetic characters")
     private String firstName;
 
     @NotBlank(message = "Last name is required")
     @Size(min = 2, max = 30, message = "Last name should be between 2 and 30 characters")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Last name must contain only alphabetic characters")
     private String lastName;
 
+    @NotBlank(message = "Country is required")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Country must contain only alphabetic characters")
     private String country;
 
     @NotBlank(message = "Designation is required")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Designation must contain only alphabetic characters")
     private String designation;
 
+    @NotBlank(message = "Company is required")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Company name must contain only alphabetic characters")
     private String company;
 
     @Email(message = "Invalid email format")
@@ -45,11 +52,8 @@ public class Contact {
 
     private LocalDate dateCreated;
 
-
     @PrePersist
     protected void onCreate() {
         dateCreated = LocalDate.now();
     }
-
-
 }
