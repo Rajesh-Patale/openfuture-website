@@ -30,24 +30,23 @@ public class AdminController {
     private AdminService adminService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerAdmin(@RequestPart("adminData") String adminData,
-                                                @RequestPart(value = "profilePicture", required = false) MultipartFile multipartFile) {
+    public ResponseEntity<String> registerAdmin(@RequestPart("adminData") String adminData)  {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             // Parse the admin data from JSON
             Admin admin = objectMapper.readValue(adminData, Admin.class);
 
             // Handle profile picture upload if provided
-            if (multipartFile != null && !multipartFile.isEmpty()) {
-                String contentType = multipartFile.getContentType();
-                if (contentType != null && isValidImageType(contentType)) {
-                    admin.setProfilePicture(multipartFile.getBytes());
-                }else {
-                    return ResponseEntity.badRequest().body("Invalid profile picture format. Only JPEG and PNG are supported.");
-                }
-            } else {
-                admin.setProfilePicture(null);
-            }
+//            if (multipartFile != null && !multipartFile.isEmpty()) {
+//                String contentType = multipartFile.getContentType();
+//                if (contentType != null && isValidImageType(contentType)) {
+//                    admin.setProfilePicture(multipartFile.getBytes());
+//                }else {
+//                    return ResponseEntity.badRequest().body("Invalid profile picture format. Only JPEG and PNG are supported.");
+//                }
+//            } else {
+//                admin.setProfilePicture(null);
+//            }
 
 
 
@@ -67,11 +66,11 @@ public class AdminController {
     }
 
     // Helper method to validate image types
-    private  boolean isValidImageType(String contentType) {
-        return !contentType.equalsIgnoreCase(".jpeg") &&
-                !contentType.equalsIgnoreCase(".png") &&
-                !contentType.equalsIgnoreCase(".jpg");
-    }
+//    private  boolean isValidImageType(String contentType) {
+//        return !contentType.equalsIgnoreCase(".jpeg") &&
+//                !contentType.equalsIgnoreCase(".png") &&
+//                !contentType.equalsIgnoreCase(".jpg");
+//    }
 
     @PostMapping("/login")
     public ResponseEntity<String> loginAdmin(@RequestParam String username, @RequestParam String password) {
@@ -88,8 +87,8 @@ public class AdminController {
     @PutMapping("/update/{adminId}")
     public ResponseEntity<?> updateAdmin(
             @PathVariable Long adminId,
-            @RequestPart("adminData") String adminData,
-            @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture) {
+            @RequestPart("adminData") String adminData) {
+//        @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture
 
         try {
             // Convert JSON string to Admin object
@@ -97,7 +96,8 @@ public class AdminController {
             Admin adminDetails = objectMapper.readValue(adminData, Admin.class);
 
             // Update the admin
-            Admin updatedAdmin = adminService.updateAdmin(adminId, adminDetails, profilePicture);
+//            Admin updatedAdmin = adminService.updateAdmin(adminId, adminDetails, profilePicture);
+            Admin updatedAdmin = adminService.updateAdmin(adminId, adminDetails);
 
             // Return the updated admin
             return ResponseEntity.ok(updatedAdmin);

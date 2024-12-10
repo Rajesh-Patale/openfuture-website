@@ -16,7 +16,7 @@ public interface AdminService {
     String loginAdmin(String username, String password);
 
     @Transactional
-    Admin updateAdmin(Long adminId, Admin adminDetails, MultipartFile profilePicture);
+    Admin updateAdmin(Long adminId, Admin adminDetails);
 
     void deleteAdmin(Long adminId);
 

@@ -49,13 +49,13 @@ public class AdminServiceImpl implements AdminService {
         }
 
         // Handle profile picture
-        if (admin.getProfilePicture() != null && admin.getProfilePicture().length > 0) {
-            logger.info("Profile picture uploaded for admin with username: {}", admin.getUsername());
-            admin.setProfilePicture(admin.getProfilePicture());
-        } else {
-            logger.info("No profile picture provided for admin with username: {}", admin.getUsername());
-            admin.setProfilePicture(null);
-        }
+//        if (admin.getProfilePicture() != null && admin.getProfilePicture().length > 0) {
+//            logger.info("Profile picture uploaded for admin with username: {}", admin.getUsername());
+//            admin.setProfilePicture(admin.getProfilePicture());
+//        } else {
+//            logger.info("No profile picture provided for admin with username: {}", admin.getUsername());
+//            admin.setProfilePicture(null);
+//        }
         // Save the admin entity
         Admin savedAdmin = adminRepository.save(admin);
         logger.info("Successfully registered admin with ID: {}", savedAdmin.getId());
@@ -85,7 +85,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public Admin updateAdmin(Long adminId, Admin adminDetails, MultipartFile profilePicture) {
+    public Admin updateAdmin(Long adminId, Admin adminDetails) {
+//        , MultipartFile profilePicture
         logger.info("Updating admin by id: {}, data: {}", adminId, adminDetails);
 
         // Retrieve the existing admin
@@ -110,20 +111,20 @@ public class AdminServiceImpl implements AdminService {
         }
 
         // Update profile picture if a new one is provided and valid
-        if (profilePicture != null && !profilePicture.isEmpty()) {
-            String contentType = profilePicture.getContentType();
-            if (contentType != null && (contentType.equals("image/jpeg") || contentType.equals("image/png"))) {
-                try {
-                    existingAdmin.setProfilePicture(profilePicture.getBytes());
-                } catch (IOException e) {
-                    logger.error("Failed to update profile picture for admin with id: {}", adminId, e);
-                    throw new RuntimeException("Failed to update profile picture", e);
-                }
-            } else {
-                logger.warn("Invalid file type: {}", contentType);
-                throw new RuntimeException("Only JPEG or PNG images are allowed");
-            }
-        }
+//        if (profilePicture != null && !profilePicture.isEmpty()) {
+//            String contentType = profilePicture.getContentType();
+//            if (contentType != null && (contentType.equals("image/jpeg") || contentType.equals("image/png"))) {
+//                try {
+//                    existingAdmin.setProfilePicture(profilePicture.getBytes());
+//                } catch (IOException e) {
+//                    logger.error("Failed to update profile picture for admin with id: {}", adminId, e);
+//                    throw new RuntimeException("Failed to update profile picture", e);
+//                }
+//            } else {
+//                logger.warn("Invalid file type: {}", contentType);
+//                throw new RuntimeException("Only JPEG or PNG images are allowed");
+//            }
+//        }
         // Save the updated admin
         Admin updatedAdmin = adminRepository.save(existingAdmin);
         logger.info("Successfully updated admin with id: {}", adminId);
