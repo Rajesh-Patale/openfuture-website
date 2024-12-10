@@ -36,7 +36,7 @@ public class Admin {
     @Column(name = "profile_picture",columnDefinition = "LONGBLOB")
     @Basic(fetch = FetchType.LAZY)
     //@Nullable
-    private byte[] profilePicture;
+//    private byte[] profilePicture;
 
     @OneToMany(mappedBy ="admin" ,cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
