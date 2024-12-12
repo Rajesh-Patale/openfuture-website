@@ -10,5 +10,8 @@ import java.util.List;
 @Repository
 public interface FormRepository extends JpaRepository<Form,Long> {
 
+    boolean existsByEmailAndPosition(String email, String position);
+
+
 }
 
