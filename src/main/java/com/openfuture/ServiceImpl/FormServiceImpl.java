@@ -1,6 +1,7 @@
 //form serviceimpl
 package com.openfuture.ServiceImpl;
 
+import com.openfuture.CommonUtil.ValidationClass;
 import com.openfuture.Entity.Form;
 import com.openfuture.Repository.FormRepository;
 import com.openfuture.Service.FormService;
@@ -25,6 +26,12 @@ public class FormServiceImpl implements FormService {
     @Override
     public String saveUser(Form user) {
         try {
+
+            logger.info("Saving position form ",user.getPosition());
+            if (formRepository.existsByEmailAndPosition(user.getEmail(), user.getPosition())) {
+                logger.error("Position '{}' already exists for email '{}'", user.getPosition(), user.getEmail());
+                throw new RuntimeException("Position '" + user.getPosition() + "' already exists for email: " + user.getEmail());
+            }
             logger.info("Attempting to save new user: {}", user);
             formRepository.save(user);
             return "User data save successfully";
