@@ -4,6 +4,7 @@ package com.openfuture.Service;
 import com.openfuture.Entity.Admin;
 import com.openfuture.Entity.Form;
 import com.openfuture.Entity.Job;
+import com.openfuture.Exception.AdminNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,4 +28,14 @@ public interface AdminService {
 
     List<Job> getAllJobsUploadedByAdmin();
     Admin getAdminById(Long adminId);
+
+    void createPasswordResetOtpForUser(Admin admin, String otp);
+
+    String validatePasswordResetOtp(String otp);
+
+    void changeUserPassword(Admin admin, String newPassword);
+
+    Admin getUserByEmail(String email) throws AdminNotFoundException;
+
+    String requestPasswordReset(String email);
 }
