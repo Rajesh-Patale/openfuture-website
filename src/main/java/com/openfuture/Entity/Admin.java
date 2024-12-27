@@ -52,4 +52,9 @@ public class Admin {
     @JsonProperty("adminId")
     private List<News> newsList;
 
+
+    @OneToOne
+    @Transient
+    private ForgotPasswordOtp forgotPasswordOtp;
+
 }

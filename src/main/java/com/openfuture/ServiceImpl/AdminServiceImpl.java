@@ -3,23 +3,30 @@ package com.openfuture.ServiceImpl;
 
 import com.openfuture.CommonUtil.ValidationClass;
 import com.openfuture.Entity.Admin;
+import com.openfuture.Entity.ForgotPasswordOtp;
 import com.openfuture.Entity.Form;
 import com.openfuture.Entity.Job;
 import com.openfuture.Exception.AdminNotFoundException;
 import com.openfuture.Exception.FormNotFoundException;
 import com.openfuture.Repository.AdminRepository;
+import com.openfuture.Repository.ForgotPasswordOtpRepository;
 import com.openfuture.Repository.FormRepository;
 import com.openfuture.Repository.JobRepository;
 import com.openfuture.Service.AdminService;
+import com.openfuture.Service.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -34,6 +41,67 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private JobRepository jobRepository;
+
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ForgotPasswordOtpRepository otpRepository;
+
+
+    private static final int OTP_EXPIRY_MINUTES = 10;
+
+    @Override
+    @Transactional
+    public void createPasswordResetOtpForUser(Admin admin, String otp) {
+        Optional<ForgotPasswordOtp> existingOtp = otpRepository.findByAdmin(admin);
+
+        ForgotPasswordOtp otpEntity = existingOtp.orElseGet(ForgotPasswordOtp::new);
+        otpEntity.setOtp(otp);
+        otpEntity.setAdmin(admin);
+        otpEntity.setCreatedAt(LocalDateTime.now());
+        otpEntity.setExpiryDate(LocalDateTime.now().plusMinutes(OTP_EXPIRY_MINUTES)); // OTP expires in 10 minutes
+
+        otpRepository.save(otpEntity);
+    }
+
+    @Override
+    public String validatePasswordResetOtp(String otp) {
+        Optional<ForgotPasswordOtp> passOtp = otpRepository.findByOtp(otp);
+        if (passOtp.isPresent() && passOtp.get().getExpiryDate().isAfter(LocalDateTime.now())) {
+            return null;
+        } else {
+            return "Invalid or expired OTP.";
+        }
+    }
+
+    @Override
+    public void changeUserPassword(Admin admin, String newPassword) {
+        admin.setPassword(passwordEncoder.encode(newPassword));  // Encrypt the new password
+        adminRepository.save(admin);
+    }
+    private String generateOtp() {
+        Random random = new Random();
+        return String.valueOf(100000 + random.nextInt(900000)); // generate 6-digit OTP
+    }
+
+    @Override
+    public Admin getUserByEmail(String email) throws AdminNotFoundException {
+        return adminRepository.findByEmail(email)
+                .orElseThrow(() -> new AdminNotFoundException("User not found with email: " + email));
+    }
+
+    @Override
+    @Transactional
+    public String requestPasswordReset(String email) {
+        Admin admin = getUserByEmail(email);
+        String otp = generateOtp();
+        createPasswordResetOtpForUser(admin, otp);
+        return otp;
+    }
+
 
     @Override
     @Transactional
@@ -56,7 +124,9 @@ public class AdminServiceImpl implements AdminService {
 //            logger.info("No profile picture provided for admin with username: {}", admin.getUsername());
 //            admin.setProfilePicture(null);
 //        }
+
         // Save the admin entity
+        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         Admin savedAdmin = adminRepository.save(admin);
         logger.info("Successfully registered admin with ID: {}", savedAdmin.getId());
         // Return a success message
@@ -74,12 +144,10 @@ public class AdminServiceImpl implements AdminService {
                 });
 
         // Direct password comparison without encoding
-        if (password.equals(admin.getPassword())) {
-            logger.info("Login successful for username: {}", username);
-            return "Login successful!";
-        } else {
-            logger.error("Invalid credentials for username: {}", username);
-            throw new RuntimeException("Invalid credentials");
+        if (!passwordEncoder.matches(password, admin.getPassword())) {
+            throw new IllegalArgumentException("Invalid username or password.");
+        }else {
+           return "Log In succesfully ";
         }
     }
 
