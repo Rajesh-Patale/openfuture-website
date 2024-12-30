@@ -31,31 +31,32 @@ public class FormController {
 
     @PostMapping("/form/saveForm")
     public ResponseEntity<String> saveUser(@RequestPart("formData") String formData,
-                                           @RequestPart(value = "cv",required = false ) MultipartFile multipartFile) throws JsonProcessingException {
+                                           @RequestPart(value = "cv", required = false) MultipartFile multipartFile) throws JsonProcessingException {
         logger.info("Received request to save user");
         ObjectMapper objectMapper = new ObjectMapper();
         Form user = objectMapper.readValue(formData, Form.class);
 
-        // handle cv
-        if(!multipartFile.isEmpty() && multipartFile!=null){
+        // Handle cv (Only PDF, DOC, DOCX files are allowed)
+        if (!multipartFile.isEmpty() && multipartFile != null) {
             String fileType = multipartFile.getContentType();
-            if ("application/pdf".equals(fileType) || "image/jpeg".equals(fileType) || "image/jpg".equals(fileType)) {
+
+            // Check if the file is a PDF or Word document
+            if ("application/pdf".equals(fileType) || "application/msword".equals(fileType) || "application/vnd.openxmlformats-officedocument.wordprocessingml.document".equals(fileType)) {
                 try {
                     user.setCv(multipartFile.getBytes());
+                    formService.saveUser(user);  // Save the user after processing the CV
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }
-            else{
+            } else {
                 return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                        .body("Only PDF and JPEG/JPG files are allowed.");
+                        .body("Only PDF and Word documents are allowed (not ZIP, images, or other formats).");
             }
+        } else {
+            user.setCv(null);  // No file uploaded, set cv as null
         }
-        else{
-            user.setCv(null);
-        }
-        String message=formService.saveUser(user);
-        return  ResponseEntity.status(HttpStatus.OK).body("User successfully save");
+
+        return ResponseEntity.status(HttpStatus.OK).body("User successfully saved");
     }
 
 }
